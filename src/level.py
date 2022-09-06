@@ -2,8 +2,7 @@ import pygame
 
 from support import import_csv_layout, import_cut_assets
 from settings import tile_size
-from tiles import StaticTile
-from coin import Coin
+from tiles import *
 
 class Level:
     def __init__(self, level_data, surface):
@@ -13,22 +12,22 @@ class Level:
 
         # terrain setup
         terrain_layout = import_csv_layout(level_data['terrain'])
-        self.terrain_sprites = self.create_tile_group(terrain_layout, 'terrain')
+        self.terrain_sprites = self.create_tile_group(terrain_layout, 'static_tile', 'assets/dungeon/tilesheet-enlarged.png')
 
         # pillar setup
         pillar_layout = import_csv_layout(level_data['pillars'])
-        self.pillar_sprites = self.create_tile_group(pillar_layout, 'pillars')
+        self.pillar_sprites = self.create_tile_group(pillar_layout, 'static_tile', 'assets/dungeon/tilesheet-enlarged.png')
 
         # chains setup
         chains_layout = import_csv_layout(level_data['chains'])
-        self.chains_sprites = self.create_tile_group(chains_layout, 'chains')
+        self.chains_sprites = self.create_tile_group(chains_layout, 'static_tile', 'assets/dungeon/tilesheet-enlarged.png')
 
         # coins setup
         coin_layout = import_csv_layout(level_data['coins'])
-        self.coin_sprites = self.create_tile_group(coin_layout, 'coins')
+        self.coin_sprites = self.create_tile_group(coin_layout, 'offset_animated_tile', 'assets/dungeon/coins')
 
 
-    def create_tile_group(self, layout, type):
+    def create_tile_group(self, layout, type, path):
         sprite_group = pygame.sprite.Group()
 
         for row_index, row in enumerate(layout): 
@@ -37,14 +36,17 @@ class Level:
                     x = col_index * tile_size
                     y = row_index * tile_size
 
-                    if type == 'terrain' or 'chains' or 'pillars':
-                        tile_list = import_cut_assets('assets/dungeon/tilesheet-enlarged.png')
+                    if type == 'static_tile':
+                        tile_list = import_cut_assets(path)
                         tile_surface = tile_list[int(val)]
 
                         sprite = StaticTile(tile_size, x, y, tile_surface)
 
-                    if type == 'coins':
-                        sprite = Coin(tile_size, x, y,'assets/dungeon/coins')
+                    if type == 'animated_tile':
+                        sprite = AnimatedTile(tile_size, x, y, path)
+
+                    if type == 'offset_animated_tile':
+                        sprite = OffsetAnimatedTile(tile_size, x, y, path)
 
                     sprite_group.add(sprite)
 
