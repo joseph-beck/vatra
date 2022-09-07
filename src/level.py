@@ -178,9 +178,7 @@ class Level:
         self.terrain_sprites.update(self.world_shift)
         self.terrain_sprites.draw(self.display_surface)
 
-        # pillars
-        self.pillar_sprites.update(self.world_shift)
-        self.pillar_sprites.draw(self.display_surface)
+        
 
         # chains
         self.chains_sprites.update(self.world_shift)
@@ -207,3 +205,7 @@ class Level:
         self.check_death()
 
         #self.check_coin_collisions()
+
+        # pillars
+        self.pillar_sprites.update(self.world_shift)
+        self.pillar_sprites.draw(self.display_surface)
