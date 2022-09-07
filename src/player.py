@@ -1,31 +1,33 @@
 import pygame 
+
 from support import import_folder
 from math import sin
 
 class Player(pygame.sprite.Sprite):
 	def __init__(self,pos,surface,create_jump_particles):
 		super().__init__()
+
 		self.import_character_assets()
 		self.frame_index = 0
-		self.animation_speed = 0.15
+		self.animation_speed = 0.1
 		self.image = self.animations['idle'][self.frame_index]
 		self.rect = self.image.get_rect(topleft = pos)
 		
-		# dust particles 
+		# particles 
 		self.import_dust_run_particles()
 		self.dust_frame_index = 0
 		self.dust_animation_speed = 0.15
 		self.display_surface = surface
 		self.create_jump_particles = create_jump_particles
 
-		# player movement
+		# movement
 		self.direction = pygame.math.Vector2(0,0)
 		self.speed = 8
 		self.gravity = 0.8
 		self.jump_speed = -16
 		self.collision_rect = pygame.Rect(self.rect.topleft,(50,self.rect.height))
 
-		# player status
+		# state
 		self.status = 'idle'
 		self.facing_right = True
 		self.on_ground = False
@@ -45,7 +47,8 @@ class Player(pygame.sprite.Sprite):
 		#self.hit_sound = pygame.mixer.Sound('../audio/effects/hit.wav')
 
 	def import_character_assets(self):
-		character_path = 'assets/player/'
+		character_path = 'assets/player/pirate/'
+		#character_path = 'assets/player/adventurer/'
 		self.animations = {'idle':[],'run':[],'jump':[],'fall':[]}
 
 		for animation in self.animations.keys():
@@ -99,10 +102,10 @@ class Player(pygame.sprite.Sprite):
 	def get_input(self):
 		keys = pygame.key.get_pressed()
 
-		if keys[pygame.K_d]:
+		if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
 			self.direction.x = 1
 			self.facing_right = True
-		elif keys[pygame.K_a]:
+		elif keys[pygame.K_a] or keys[pygame.K_LEFT]:
 			self.direction.x = -1
 			self.facing_right = False
 		else:
@@ -146,8 +149,10 @@ class Player(pygame.sprite.Sprite):
 
 	def wave_value(self):
 		value = sin(pygame.time.get_ticks())
-		if value >= 0: return 255
-		else: return 0
+		if value >= 0: 
+			return 255
+		else: 
+			return 0
 
 	def update(self):
 		self.get_input()
